@@ -10,8 +10,8 @@ import SplashScene from './splashScene.js'
 import TitleScene from './titleScene.js'
 
 //My game scenes
-const SplashScene = new SplashScene()
-const TitleScene = new TitleScene()
+const splashScene = new SplashScene()
+const titleScene = new TitleScene()
 
 //* Game scene */
 const config = {
@@ -19,13 +19,13 @@ const config = {
   width: 1920,
   height: 1080,
   physics: {
-    'arcade',
-  arcade: {
-    debug: true
-  }
-},
+    default: 'arcade',
+    arcade: {
+      debug: false
+    }
+  },
   //background color of program
-  backgroundColor: 0x5f6e7a,
+  backgroundColor: 0xffffff,
   scale: {
     mode: Phaser.Scale.FIT,
     //to center it in the middle of webpage
