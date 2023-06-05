@@ -1,5 +1,3 @@
-/* global phaser */
-
 // Copyright (c) 2023 Remy Skelton All rights reserved
 // 
 //Created by: Remy Skelton
@@ -37,6 +35,7 @@ class SplashScene extends Phaser.Scene {
     console.log("Splash Scene")
     this.load.image('splashSceneBackground', './assets/splashSceneImage.png')
   }
+
   
 /** 
 *Can be defined on the screen.
@@ -48,8 +47,8 @@ class SplashScene extends Phaser.Scene {
     this.splashSceneBackgroundImage.x = 1920 / 2
     this.splashSceneBackgroundImage.y = 1080 / 2
     
-    //pass
   }
+
 
   /** 
   *This should be overridden by our other scenes.
@@ -60,6 +59,8 @@ class SplashScene extends Phaser.Scene {
    update(time, delta) {
     if (time > 3000)
       this.scene.switch("titleScene")
+     const container = document.getElementById("splash-alien");
+    container.innerHTML = "";
   }
 }
 
