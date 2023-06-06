@@ -7,9 +7,15 @@
 //This is the Phaser3 configuration file 
 
 import SplashScene from './splashScene.js'
+import TitleScene from './titleScene.js'
+import MenuScene from './menuScene.js'
+import GameScene from './gameScene.js'
 
 //My game scenes
 const splashScene = new SplashScene()
+const titleScene = new TitleScene()
+const menuScene = new MenuScene()
+const gameScene = new GameScene()
 
 //* Game scene */
 const config = {
@@ -26,7 +32,7 @@ const config = {
   backgroundColor: 0xffffff,
   scale: {
     mode: Phaser.Scale.FIT,
-    //to center it in the middle of webpage
+    // we place it in the middle of the page.
     autoCenter: Phaser.Scale.CENTER_BOTH
   }
 }
@@ -36,6 +42,9 @@ const game = new Phaser.Game(config)
 //loading of scene
 //any "key" is global and we can't reuse it
 game.scene.add('splashScene', splashScene)
+game.scene.add('titleScene', titleScene)
+game.scene.add('menuScene', menuScene)
+game.scene.add('gameScene', gameScene)
 
 
 //Title for the start

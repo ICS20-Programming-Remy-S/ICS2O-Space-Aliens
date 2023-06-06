@@ -4,69 +4,70 @@
 // 
 //Created by: Remy Skelton
 //Created on: May 2023
-//This is the title scene for my game
+//This is the Phaser3 configuration file 
 
 /** 
 * This class is the Splash Scene.
 */
 
-class TitleScene extends Phaser.Scene {
-
+class MenuScene extends Phaser.Scene {
+  constructor () {
+    super({ key: 'menuScene' })
     /** 
   * This method is the construtor.
   */
-    constructor() {
-    super({ key: 'titleScene' })
 
-    this.titleSceneBackgroundImage = null
-    this.titleSceneText = null
-    this.titleSceneTextStyle = { font: '200px Times', fill: '#fde4b9', align: 'center' }
+    this.menuSceneBackgroundImage = null
+    this.startButton = null
   }
-
-    /** 
+  
+ /** 
   *Can be defined on the screen.
   *Uses the method named by the Scene Manager when this Scene Starts,
   * before preload() and create().
   *@param {object} data - Any data passed via ScenePlugin.add() or scenePlugin.start().
   */
-  init(data) {
+  init (data) {
     this.cameras.main.setBackgroundColor('#ffffff')
   }
 
-    /** 
+   /** 
   *Can be defined on the screen.
   *use it so that is loads assets.
   */
-  preload() {
-    console.log('Title Scene')
-    this.load.image('titleSceneBackground', 'assets/Ballon_Gold_image.jpg')
+  preload () {
+    console.log('Menu Scene')
+
+    this.load.image('menuSceneBackground', 'assets/aliens_screen_image2.jpg')
+    this.load.image('startButton', 'assets/start.png')
   }
-
-
+  
   /** 
 *Can be defined on the screen.
 *we use to creat the game boject we want.
 *@param {object} data - Any data passed via ScenePlugin.add() or scenePlugin.start().
 */
-  create(data) {
-    this.titleSceneBackgroundImage = this.add.sprite(0, 0, 'titleSceneBackground').setScale(2.75)
-    this.titleSceneBackgroundImage.x = 1920 / 2
-    this.titleSceneBackgroundImage.y = 1080 / 2
+  create (data) {
+    this.menuSceneBackgroundImage = this.add.sprite(0, 0, 'menuSceneBackground')
+    this.menuSceneBackgroundImage.x = 1920 / 2
+    this.menuSceneBackgroundImage.y = 1080 / 2
 
-    this.titleSceneText = this.add.text(1920 / 2, 1080 / 2 + 350, "Ballon D'or", this.titleSceneTextStyle).setOrigin(0.5)
+    this.startButton = this.add.sprite(1920 / 2, (1080 / 2) + 100, 'startButton')
+    this.startButton.setInteractive({ useHandCursor: true })
+    this.startButton.on('pointerdown', () => this.clickButton())
   }
-
-    /** 
+ /** 
   *This should be overridden by our other scenes.
   * This method only called once per game step and only while the scene is running.
   * @param {number} time - The current time.
   * @param {number} delta - The delta time in ms since the last frame.
   */
-  update(time, delta) {
-    if (time > 6000) {
-      this.scene.switch('menuScene')
-    }
+  update (time, delta) {
+  }
+
+  clickButton () {
+    this.scene.start('gameScene')
   }
 }
 
-export default TitleScene
+export default MenuScene
