@@ -1,3 +1,4 @@
+/* global phaser */
 
 // Copyright (c) 2023 Remy Skelton All rights reserved
 // 
@@ -23,7 +24,7 @@ class SplashScene extends Phaser.Scene {
    * @param {object} data - Any data passed via ScenePlugin.add() or scenePlugin.start().
    */
   init (data) {
-    this.cameras.main.setBackgroundColor('#ffffff')
+    this.cameras.main.setBackgroundColor('#000000')
   }
   /** 
    * Can be defined on the screen.
@@ -31,7 +32,7 @@ class SplashScene extends Phaser.Scene {
    */
   preload () {
     console.log('Splash Scene')
-		this.load.image('splashSceneBackground', './assets/Mac-Image.png')
+		this.load.image('macSplash', './assets/mac-Image.png')
   }
 
   /** 
@@ -40,7 +41,7 @@ class SplashScene extends Phaser.Scene {
    * @param {object} data - Any data passed via ScenePlugin.add() or scenePlugin.start().
    */
   create (data) {
-    this.splashSceneBackgroundImage = this.add.sprite(0, 0, 'splashSceneBackground')
+    this.splashSceneBackgroundImage = this.add.sprite(0, 0, 'macSplash')
     this.splashSceneBackgroundImage.x = 1920 / 2
     this.splashSceneBackgroundImage.y = 1080 / 2
   }

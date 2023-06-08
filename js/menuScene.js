@@ -1,5 +1,11 @@
 /* global phaser */
 
+// Copyright (c) 2023 Remy Skelton All rights reserved
+// 
+// Created by: Remy Skelton
+// Created on: May 2023
+// This is the menu scene for my game
+
 /**
  * This class is the Menu Scene.
  */
@@ -27,8 +33,8 @@ class MenuScene extends Phaser.Scene {
    */
   preload () {
     console.log('Menu Scene')
-		this.load.image('startButton', './assets/startImage.png')
-    this.load.image('menuSceneBackground', './assets/Gold-Ball.jpg')
+		this.load.image('startBall', './assets/startImage.png')
+    this.load.image('goldBallBackground', './assets/gold-Ball.jpg')
   }
 
   /**
@@ -37,11 +43,11 @@ class MenuScene extends Phaser.Scene {
    * @param {object} data - Any data passed via ScenePlugin.add() or scenePlugin.start().
    */
   create (data) {
-	  this.menuSceneBackgroundImage = this.add.sprite(0, 0, 'menuSceneBackground').setScale(1.5)
+	  this.menuSceneBackgroundImage = this.add.sprite(0, 0, 'goldBallBackground').setScale(1.5)
     this.menuSceneBackgroundImage.x = 1920 / 2
     this.menuSceneBackgroundImage.y = 1080 / 2
 
-    this.startButton = this.add.sprite(1920 / 2, (1080 / 2) + 100, 'startButton').setScale(3.0)
+    this.startButton = this.add.sprite(1920 / 2, (1080 / 2) + 100, 'startBall').setScale(3.0)
     this.startButton.setInteractive({ useHandCursor: true })
     this.startButton.on('pointerdown', () => this.clickButton())
   }

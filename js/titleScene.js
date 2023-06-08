@@ -38,7 +38,7 @@ class TitleScene extends Phaser.Scene {
    */
   preload () {
     console.log('Title Scene')
-		this.load.image('titleSceneBackground', 'assets/Ballon_Gold_image.jpg')
+		this.load.image('ballonGoldTitle', 'assets/ballon_Gold_image.jpg')
   }
 
   /** 
@@ -47,7 +47,7 @@ class TitleScene extends Phaser.Scene {
    * @param {object} data - Any data passed via ScenePlugin.add() or scenePlugin.start().
    */
   create (data) {
-    this.titleSceneBackgroundImage = this.add.sprite(0, 0, 'titleSceneBackground').setScale(2.75)
+    this.titleSceneBackgroundImage = this.add.sprite(0, 0, 'ballonGoldTitle').setScale(2.75)
     this.titleSceneBackgroundImage.x = 1920 / 2
     this.titleSceneBackgroundImage.y = 1080 / 2
 

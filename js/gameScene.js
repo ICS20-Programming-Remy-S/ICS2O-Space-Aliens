@@ -23,22 +23,24 @@ class GameScene extends Phaser.Scene {
   preload () {
     console.log('Game Scene')
 
-    // images
-    this.load.image('starBackground', './assets/starBackground.png')
-    this.load.image('ship', './assets/spaceShip.png')
-    this.load.image('missile', './assets/missile.png')
+    // images for scene
+    this.load.image('soccerBackground', './assets/stadium.png')
+    this.load.image('soccerPlayer', './assets/player.png')
+    this.load.image('soccerBall', './assets/soccerBall.png')
+    // sounds for scene
+    this.load.audio('ballShot', './assets/ballKicked.wav')
   }
 
   create (data) {
-    this.background = this.add.image(0, 0, 'starBackground').setScale(2.75)
+    this.background = this.add.image(0, 0, 'soccerBackground').setScale(2.75)
     this.background.setOrigin(0, 0)
 
-    this.ship = this.physics.add.sprite(1920 / 2, 1080 - 100, 'ship')
+    this.ship = this.physics.add.sprite(1920 / 2, 1080 - 100, 'soccerPlayer')
 
     // create a group for the missiles
     this.missileGroup = this.physics.add.group()
     }
-
+   
   update (time, delta) {
     // called 60 times a second, hopefully!
     const keyLeftObj = this.input.keyboard.addKey('LEFT')
@@ -62,14 +64,21 @@ class GameScene extends Phaser.Scene {
       if (this.fireMissile === false) {
         // fire missile
         this.fireMissile = true
-        const aNewMissile = this.physics.add.sprite(this.ship.x, this.ship.y, 'missile').setScale(0.2)
+        const aNewMissile = this.physics.add.sprite(this.ship.x, this.ship.y, 'soccerBall').setScale(0.2)
         this.missileGroup.add(aNewMissile)
+        this.sound.play('ballShot')
       }
     }
   
     if (keySpaceObj.isUp === true) {
       this.fireMissile = false
     }
+    this.missileGroup.children.each(function (item) {
+      item.y = item.y - 15
+      if (item.y < 0) {
+        item.destroy()
+      }
+    })
   }
 }
 
