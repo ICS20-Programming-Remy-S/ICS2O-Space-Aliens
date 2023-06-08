@@ -13,13 +13,14 @@ class TitleScene extends Phaser.Scene {
   /** 
    * This method is the constructor.
    */
-  constructor() {
-    super({ key: 'titleScene' });
+  constructor () {
+    super({ key: 'titleScene' })
 
-    this.titleSceneBackgroundImage = null;
-    this.titleSceneText = null;
-    this.titleSceneTextStyle = { font: '200px Times', fill: '#fde4b9', align: 'center' };
+    this.titleSceneBackgroundImage = null
+    this.titleSceneText = null
+    this.titleSceneTextStyle = { font: '200px Times', fill: '#fde4b9', align: 'center' }
   }
+
 
   /** 
    * Can be defined on the screen.
@@ -27,17 +28,17 @@ class TitleScene extends Phaser.Scene {
    * before preload() and create().
    * @param {object} data - Any data passed via ScenePlugin.add() or scenePlugin.start().
    */
-  init(data) {
-    this.cameras.main.setBackgroundColor('#ffffff');
+  init (data) {
+    this.cameras.main.setBackgroundColor('#ffffff')
   }
 
   /** 
    * Can be defined on the screen.
    * Use it to load assets.
    */
-  preload() {
-    console.log('Title Scene');
-    this.load.image('titleSceneBackground', '.assets/Ballon_Gold_image.jpg');
+  preload () {
+    console.log('Title Scene')
+		this.load.image('titleSceneBackground', 'assets/Ballon_Gold_image.jpg')
   }
 
   /** 
@@ -45,12 +46,12 @@ class TitleScene extends Phaser.Scene {
    * Use it to create the game object we want.
    * @param {object} data - Any data passed via ScenePlugin.add() or scenePlugin.start().
    */
-  create(data) {
-    this.titleSceneBackgroundImage = this.add.sprite(0, 0, 'titleSceneBackground');
-    this.titleSceneBackgroundImage.x = 1920 / 2;
-    this.titleSceneBackgroundImage.y = 1080 / 2;
+  create (data) {
+    this.titleSceneBackgroundImage = this.add.sprite(0, 0, 'titleSceneBackground').setScale(2.75)
+    this.titleSceneBackgroundImage.x = 1920 / 2
+    this.titleSceneBackgroundImage.y = 1080 / 2
 
-    this.titleSceneText = this.add.text(1920 / 2, 1080 / 2 + 350, "Ballon D'or", this.titleSceneTextStyle).setOrigin(0.5);
+    this.titleSceneText = this.add.text(1920 / 2, (1080 / 2) + 350, "Ballon D'or", this.titleSceneTextStyle).setOrigin(0.5)
   }
 
   /** 
@@ -59,11 +60,11 @@ class TitleScene extends Phaser.Scene {
    * @param {number} time - The current time.
    * @param {number} delta - The delta time in ms since the last frame.
    */
-  update(time, delta) {
+  update (time, delta) {
     if (time > 6000) {
-      this.scene.switch('menuScene');
+      this.scene.switch('menuScene')
     }
   }
 }
 
-export default TitleScene;
+export default TitleScene
