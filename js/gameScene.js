@@ -24,13 +24,13 @@ class GameScene extends Phaser.Scene {
     console.log('Game Scene')
 
     // images
-    this.load.image('starBackground', 'assets/starBackground.png')
-    this.load.image('ship', 'assets/spaceShip.png')
-    this.load.image('missile', 'assets/missile.png')
+    this.load.image('starBackground', './assets/starBackground.png')
+    this.load.image('ship', './assets/spaceShip.png')
+    this.load.image('missile', './assets/missile.png')
   }
 
   create (data) {
-    this.background = this.add.image(0, 0, 'starBackground').setScale(2.0)
+    this.background = this.add.image(0, 0, 'starBackground').setScale(2.75)
     this.background.setOrigin(0, 0)
 
     this.ship = this.physics.add.sprite(1920 / 2, 1080 - 100, 'ship')
@@ -62,7 +62,7 @@ class GameScene extends Phaser.Scene {
       if (this.fireMissile === false) {
         // fire missile
         this.fireMissile = true
-        const aNewMissile = this.physics.add.sprite(this.ship.x, this.ship.y, 'missile')
+        const aNewMissile = this.physics.add.sprite(this.ship.x, this.ship.y, 'missile').setScale(0.2)
         this.missileGroup.add(aNewMissile)
       }
     }
