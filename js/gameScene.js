@@ -7,6 +7,25 @@
 // This is the game scene for my game
 
 class GameScene extends Phaser.Scene {
+
+  //create an defender
+  createAlien () {
+    //random number generator for the defender location
+    const alienXLocation = Math.floor(Math.random() * 1920) * 1
+    // number generator between 1 and 50;
+    let alienXVelocity = Math.floor(Math.random() * 50) + 1
+    // this will change 50% of x positions of defenders to negetives
+    alienXVelocity *= Math.round(Math.random()) ? 1 : -1
+    
+    const anAlien = this.physics.add.sprite(alienXLocation, -100, 'defender')
+    anAlien.body.velocity.y = 200
+    anAlien.body.velocity.x = alienXVelocity
+    // Set the scale of the defender sprite, Adjust the scale value as needed
+  anAlien.setScale(0.35);
+
+    this.alienGroup.add(anAlien)
+  }
+
   
   constructor () {
     super({ key: 'gameScene' })
@@ -27,6 +46,7 @@ class GameScene extends Phaser.Scene {
     this.load.image('soccerBackground', './assets/stadium.png')
     this.load.image('soccerPlayer', './assets/player.png')
     this.load.image('soccerBall', './assets/soccerBall.png')
+    this.load.image('defender', './assets/defender.png')
     // sounds for scene
     this.load.audio('ballShot', './assets/ballKicked.wav')
   }
@@ -37,8 +57,12 @@ class GameScene extends Phaser.Scene {
 
     this.ship = this.physics.add.sprite(1920 / 2, 1080 - 100, 'soccerPlayer')
 
-    // create a group for the missiles
+    // create a group for the soccer ball
     this.missileGroup = this.physics.add.group()
+
+    // create a group for the defender
+    this.alienGroup = this.add.group() 
+    this.createAlien()
     }
    
   update (time, delta) {
@@ -75,11 +99,12 @@ class GameScene extends Phaser.Scene {
     }
     this.missileGroup.children.each(function (item) {
       item.y = item.y - 15
-      if (item.y < 0) {
+      if (item.y < 50) {
         item.destroy()
       }
     })
   }
 }
+
 
 export default GameScene
