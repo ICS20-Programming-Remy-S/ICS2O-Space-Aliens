@@ -30,13 +30,16 @@ class GameScene extends Phaser.Scene {
   constructor () {
     super({ key: 'gameScene' })
     
-    this.background = null
     this.ship = null
     this.fireMissile = false
+    this.score = 0
+    this.scoreText = null
+    this.scoreTextStyle = { font: '65px Arial', fill: '#ffffff', align: 'center'}
+    this.gameOverTextStyle = { font: '65px Arial', fill: '#ff0000', align: 'center'}
   }
 
   init (data) {
-    this.cameras.main.setBackgroundColor('#ffffff')
+    this.cameras.main.setBackgroundColor('#0x5f6e7a')
   }
 
   preload () {
@@ -49,26 +52,74 @@ class GameScene extends Phaser.Scene {
     this.load.image('defender', './assets/defender.png')
     // sounds for scene
     this.load.audio('ballShot', './assets/ballKicked.wav')
+    this.load.audio('explosion', './assets/barrelExploding.wav')
+    this.load.audio('overSound', './assets/gameOver.wav')
+    this.load.audio('music', './assets/brazilSong.wav')
   }
 
   create (data) {
+
+    // Soundtrack
+    const song = this.sound.add('music');
+  song.loop = true;
+  song.play();
+    
     this.background = this.add.image(0, 0, 'soccerBackground').setScale(2.75)
     this.background.setOrigin(0, 0)
 
+    this.scoreText = this.add.text(10, 10, 'Score: ' + this.score.toString(), this.scoreTextStyle)
+
     this.ship = this.physics.add.sprite(1920 / 2, 1080 - 100, 'soccerPlayer')
+
+      // Create the Game Over sound
+  this.gameOverSound = this.sound.add('overSound');
 
     // create a group for the soccer ball
     this.missileGroup = this.physics.add.group()
 
     // create a group for the defender
-    this.alienGroup = this.add.group() 
+    this.alienGroup = this.add.group()
     this.createAlien()
-    }
-   
-  update (time, delta) {
+
+    //collisions between ball and defender
+    this.physics.add.collider(this.missileGroup, this.alienGroup, function (missileCollide, alienCollide) {
+      alienCollide.destroy()
+      missileCollide.destroy()
+      this.sound.play('explosion')
+      this.score = this.score + 1
+      this.scoreText.setText('Score: ' + this.score.toString())
+      this.createAlien()
+      this.createAlien()
+    }.bind(this))
+
+      // Collisions between ship and aliens
+      this.physics.add.collider(this.ship, this.alienGroup, function (shipCollide, alienCollide) {
+      this.gameOverSound.play();
+      song.pause('music')
+      this.physics.pause()
+      alienCollide.destroy()
+      shipCollide.destroy()
+      this.gameOverText = this.add.text(1920 / 2, 1080 / 2, 'Game Over!\nClick to play again.', this.gameOverTextStyle).setOrigin(0.5)
+      this.gameOverText.setInteractive({ useHandCursor: true })
+      this.gameOverText.on('pointerdown', () => this.scene.start('gameScene'))
+      this.score = 0
+      
+  }.bind(this))
+    
+    
+}
+    
+
+    update (time, delta) {
+  // Check if the game over sound is playing and stop it if the scene is transitioning
+  if (this.gameOverSound.isPlaying && this.sound.add('music')) {
+    this.gameOverSound.stop();
+  }
     // called 60 times a second, hopefully!
     const keyLeftObj = this.input.keyboard.addKey('LEFT')
     const keyRightObj = this.input.keyboard.addKey('RIGHT')
+    const keyUpObj = this.input.keyboard.addKey('UP')
+    const keyDownObj = this.input.keyboard.addKey('DOWN')
     const keySpaceObj = this.input.keyboard.addKey('SPACE')
 
     if (keyLeftObj.isDown === true) {
@@ -84,6 +135,21 @@ class GameScene extends Phaser.Scene {
         this.ship.x = 1920
       }
     }
+    
+    if (keyUpObj.isDown === true) {
+      this.ship.y -= 15
+      if (this.ship.y < 0) {
+        this.ship.y = 0
+      }
+    }
+
+    if (keyDownObj.isDown === true) {
+      this.ship.y += 15
+      if (this.ship.y > 1080) {
+        this.ship.y = 1080
+      }
+    }
+    
     if (keySpaceObj.isDown === true) {
       if (this.fireMissile === false) {
         // fire missile
@@ -108,3 +174,5 @@ class GameScene extends Phaser.Scene {
 
 
 export default GameScene
+
+    
