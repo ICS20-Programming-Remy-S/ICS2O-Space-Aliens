@@ -52,7 +52,7 @@ class GameScene extends Phaser.Scene {
     this.load.image('defender', './assets/defender.png')
     // sounds for scene
     this.load.audio('ballShot', './assets/ballKicked.wav')
-    this.load.audio('explosion', './assets/barrelExploding.wav')
+    this.load.audio('defenderPassed', './assets/defenderPassed.wav')
     this.load.audio('overSound', './assets/gameOver.wav')
     this.load.audio('music', './assets/brazilSong.wav')
   }
@@ -89,7 +89,7 @@ class GameScene extends Phaser.Scene {
     this.physics.add.collider(this.missileGroup, this.alienGroup, function (missileCollide, alienCollide) {
       alienCollide.destroy()
       missileCollide.destroy()
-      this.sound.play('explosion')
+      this.sound.play('defenderPassed')
       this.score = this.score + 1
       this.scoreText.setText('Score: ' + this.score.toString())
       this.createAlien()
@@ -107,8 +107,9 @@ class GameScene extends Phaser.Scene {
       this.gameOverText.setInteractive({ useHandCursor: true })
       this.gameOverText.on('pointerdown', () => this.scene.start('gameScene'))
       this.score = 0
-      if (this.scene.start('gameScene'))
-      gameOverSound.pause('overSound')
+        if (song.isPlaying) {
+          gameOverSound.pause('overSound')
+        }
   }.bind(this))
     
     
@@ -121,6 +122,10 @@ class GameScene extends Phaser.Scene {
     const keyRightObj = this.input.keyboard.addKey('RIGHT')
     const keyUpObj = this.input.keyboard.addKey('UP')
     const keyDownObj = this.input.keyboard.addKey('DOWN')
+    const keyAObj = this.input.keyboard.addKey('A')
+    const keyDObj = this.input.keyboard.addKey('D')
+    const keyWObj = this.input.keyboard.addKey('W')
+    const keySObj = this.input.keyboard.addKey('S')
     const keySpaceObj = this.input.keyboard.addKey('SPACE')
 
     if (keyLeftObj.isDown === true) {
@@ -145,6 +150,34 @@ class GameScene extends Phaser.Scene {
     }
 
     if (keyDownObj.isDown === true) {
+      this.ship.y += 15
+      if (this.ship.y > 1080) {
+        this.ship.y = 1080
+      }
+    }
+
+      if (keyAObj.isDown === true) {
+      this.ship.x -= 15
+      if (this.ship.x < 0) {
+        this.ship.x = 1920
+      }
+    }
+
+    if (keyDObj.isDown === true) {
+      this.ship.x += 15
+      if (this.ship.x > 1920) {
+        this.ship.x = 0
+      }
+    }
+    
+    if (keyWObj.isDown === true) {
+      this.ship.y -= 15
+      if (this.ship.y < 0) {
+        this.ship.y = 0
+      }
+    }
+
+    if (keySObj.isDown === true) {
       this.ship.y += 15
       if (this.ship.y > 1080) {
         this.ship.y = 1080
