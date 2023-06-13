@@ -72,13 +72,17 @@ class GameScene extends Phaser.Scene {
     this.ship = this.physics.add.sprite(1920 / 2, 1080 - 100, 'soccerPlayer')
 
       // Create the Game Over sound
-  this.gameOverSound = this.sound.add('overSound');
+  const gameOverSound = this.sound.add('overSound');
 
     // create a group for the soccer ball
     this.missileGroup = this.physics.add.group()
 
     // create a group for the defender
     this.alienGroup = this.add.group()
+    this.createAlien()
+    this.createAlien()
+    this.createAlien()
+    this.createAlien()
     this.createAlien()
 
     //collisions between ball and defender
@@ -94,7 +98,7 @@ class GameScene extends Phaser.Scene {
 
       // Collisions between ship and aliens
       this.physics.add.collider(this.ship, this.alienGroup, function (shipCollide, alienCollide) {
-      this.gameOverSound.play();
+      gameOverSound.play();
       song.pause('music')
       this.physics.pause()
       alienCollide.destroy()
@@ -103,7 +107,8 @@ class GameScene extends Phaser.Scene {
       this.gameOverText.setInteractive({ useHandCursor: true })
       this.gameOverText.on('pointerdown', () => this.scene.start('gameScene'))
       this.score = 0
-      
+      if (this.scene.start('gameScene'))
+      gameOverSound.pause('overSound')
   }.bind(this))
     
     
@@ -111,10 +116,6 @@ class GameScene extends Phaser.Scene {
     
 
     update (time, delta) {
-  // Check if the game over sound is playing and stop it if the scene is transitioning
-  if (this.gameOverSound.isPlaying && this.sound.add('music')) {
-    this.gameOverSound.stop();
-  }
     // called 60 times a second, hopefully!
     const keyLeftObj = this.input.keyboard.addKey('LEFT')
     const keyRightObj = this.input.keyboard.addKey('RIGHT')
@@ -125,14 +126,14 @@ class GameScene extends Phaser.Scene {
     if (keyLeftObj.isDown === true) {
       this.ship.x -= 15
       if (this.ship.x < 0) {
-        this.ship.x = 0
+        this.ship.x = 1920
       }
     }
 
     if (keyRightObj.isDown === true) {
       this.ship.x += 15
       if (this.ship.x > 1920) {
-        this.ship.x = 1920
+        this.ship.x = 0
       }
     }
     
