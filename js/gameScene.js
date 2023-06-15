@@ -9,37 +9,56 @@
 class GameScene extends Phaser.Scene {
 
   //create an defender
-  createAlien () {
+  createDefender () {
     //random number generator for the defender location
-    const alienXLocation = Math.floor(Math.random() * 1920) * 1
-    // number generator between 1 and 50;
-    let alienXVelocity = Math.floor(Math.random() * 50) + 1
+    const defenderXLocation = Math.floor(Math.random() * 1920) * 1
+    // number generator between 1 and 50
+    let defenderXVelocity = Math.floor(Math.random() * 50) + 1
     // this will change 50% of x positions of defenders to negetives
-    alienXVelocity *= Math.round(Math.random()) ? 1 : -1
+    defenderXVelocity *= Math.round(Math.random()) ? 1 : -1
     
-    const anAlien = this.physics.add.sprite(alienXLocation, -100, 'defender')
-    anAlien.body.velocity.y = 200
-    anAlien.body.velocity.x = alienXVelocity
+    const anDefender = this.physics.add.sprite(defenderXLocation, -100, 'defender')
+    anDefender.body.velocity.y = 200
+    anDefender.body.velocity.x = defenderXVelocity
     // Set the scale of the defender sprite, Adjust the scale value as needed
-  anAlien.setScale(0.35);
+  anDefender.setScale(0.35)
 
-    this.alienGroup.add(anAlien)
+     // Enable physics for the defender
+    this.physics.world.enable(anDefender)
+
+    // Adjust the hitbox size of the defender sprite
+    anDefender.body.setSize(anDefender.width * anDefender.scaleX, anDefender.height * anDefender.scaleY)
+    // Adjust the hitbox offset if needed
+    anDefender.body.setOffset(50, 10)
+
+
+    this.defenderGroup.add(anDefender)
   }
 
   
-  constructor () {
-    super({ key: 'gameScene' })
-    
-    this.ship = null
-    this.fireMissile = false
-    this.score = 0
-    this.scoreText = null
-    this.scoreTextStyle = { font: '65px Arial', fill: '#ffffff', align: 'center'}
-    this.gameOverTextStyle = { font: '65px Arial', fill: '#ff0000', align: 'center'}
+  constructor() {
+    super({ key: 'gameScene' });
+
+    // Initialize variables
+    this.player = null;
+    this.fireBall = false;
+    this.score = 0;
+    this.scoreText = null;
+    this.scoreTextStyle = { font: '65px Arial', fill: '#ffffff', align: 'center' };
+    this.gameOverTextStyle = { font: '65px Arial', fill: '#ff0000', align: 'center' };
+    this.highScore = 0;
+    this.highScoreText = null;
   }
 
-  init (data) {
-    this.cameras.main.setBackgroundColor('#0x5f6e7a')
+  // Initialize scene
+  init(data) {
+    this.cameras.main.setBackgroundColor('#0x5f6e7a');
+
+    // Retrieve high score from local storage
+    const storedHighScore = localStorage.getItem('highScore');
+    if (storedHighScore) {
+      this.highScore = parseInt(storedHighScore);
+    }
   }
 
   preload () {
@@ -57,76 +76,88 @@ class GameScene extends Phaser.Scene {
     this.load.audio('music', './assets/brazilSong.wav')
   }
 
+  // Create scene
   create(data) {
-  // Soundtrack
-  const song = this.sound.add('music');
-  song.loop = true;
-  song.play();
+    // Soundtrack
+    const song = this.sound.add('music');
+    song.loop = true;
+    song.play();
 
-  this.background = this.add.image(0, 0, 'soccerBackground').setScale(2.75);
-  this.background.setOrigin(0, 0);
+    // Background image
+    this.background = this.add.image(0, 0, 'soccerBackground').setScale(2.75);
+    this.background.setOrigin(0, 0);
 
-  this.scoreText = this.add.text(10, 10, 'Score: ' + this.score.toString(), this.scoreTextStyle);
+    // Score text
+    this.scoreText = this.add.text(10, 10, 'Score: ' + this.score.toString(), this.scoreTextStyle);
 
-  this.ship = this.physics.add.sprite(1920 / 2, 1080 - 100, 'soccerPlayer');
+    // High score text
+    this.highScoreText = this.add.text(
+      10,
+      70,
+      'High Score: ' + this.highScore.toString(),
+      this.scoreTextStyle
+    );
 
-  // Create the Game Over sound
-  const gameOverSound = this.sound.add('overSound');
+    // Create player sprite
+    this.player = this.physics.add.sprite(1920 / 2, 1080 - 100, 'soccerPlayer');
 
-  // create a group for the soccer ball
-  this.missileGroup = this.physics.add.group();
+    // Game Over sound
+    const gameOverSound = this.sound.add('overSound');
 
-  // create a group for the defender
-  this.alienGroup = this.add.group();
-  this.createAlien()
-    
+    // Create groups for ball and defender sprites
+    this.ballGroup = this.physics.add.group();
+    this.defenderGroup = this.add.group();
+    this.createDefender();
 
-  // Function to create an alien
-  const createAlien = () => {
-    const alienXLocation = Math.floor(Math.random() * 1920) * 1;
-    let alienXVelocity = Math.floor(Math.random() * 50) + 1;
-    alienXVelocity *= Math.round(Math.random()) ? 1 : -1;
+    // Function to create a defender
+    const createDefender = () => {
+      const defenderXLocation = Math.floor(Math.random() * 1920) * 1;
+      let defenderXVelocity = Math.floor(Math.random() * 50) + 1;
+      defenderXVelocity *= Math.round(Math.random()) ? 1 : -1;
 
-    const anAlien = this.physics.add.sprite(alienXLocation, -100, 'defender');
-    anAlien.body.velocity.y = 200;
-    anAlien.body.velocity.x = alienXVelocity;
-    anAlien.setScale(0.35);
+      const anDefender = this.physics.add.sprite(defenderXLocation, -100, 'defender');
+      anDefender.body.velocity.y = 200;
+      anDefender.body.velocity.x = defenderXVelocity;
+      anDefender.setScale(0.35);
 
-    this.alienGroup.add(anAlien);
-  };
+      this.defenderGroup.add(anDefender);
+    };
 
-  // Create a timer event to call createAlien every 2 seconds
-  const alienTimer = this.time.addEvent({
+  // Create a timer event to call createDefender every 2 seconds
+  const defenderTimer = this.time.addEvent({
     delay: 2000,
-    callback: createAlien,
+    callback: createDefender,
     callbackScope: this,
     loop: true
   });
 
   //collisions between ball and defender
-    this.physics.add.collider(this.missileGroup, this.alienGroup, function (missileCollide, alienCollide) {
-      alienCollide.destroy()
-      missileCollide.destroy()
+    this.physics.add.collider(this.ballGroup, this.defenderGroup, function (ballCollide, defenderCollide) {
+      defenderCollide.destroy()
+      ballCollide.destroy()
       this.sound.play('defenderPassed')
       this.score = this.score + 1
       this.scoreText.setText('Score: ' + this.score.toString())
-      this.createAlien()
-      this.createAlien()
+      this.createDefender()
+      this.createDefender()
     }.bind(this))
 
-  // Collisions between ship and aliens
-  this.physics.add.collider(this.ship, this.alienGroup, function (shipCollide, alienCollide) {
-    gameOverSound.play();
-    song.pause('music');
-    this.physics.pause();
-    alienCollide.destroy();
-    shipCollide.destroy();
-    this.gameOverText = this.add.text(1920 / 2, 1080 / 2, 'Game Over!\nClick to play again.', this.gameOverTextStyle).setOrigin(0.5);
+  // Collisions between player and defenders
+  this.physics.add.collider(this.player, this.defenderGroup, function (playerCollide, defenderCollide) {
+    gameOverSound.play()
+    // Disable the space bar
+    const keySpaceObj = this.input.keyboard.addKey('SPACE')
+    keySpaceObj.enabled = false
+    song.pause('music')
+    this.physics.pause()
+    defenderCollide.destroy()
+    playerCollide.destroy()
+    this.gameOverText = this.add.text(1920 / 2, 1080 / 2, 'Game Over!\nClick to play again.', this.gameOverTextStyle).setOrigin(0.5)
     this.gameOverText.setInteractive({ useHandCursor: true });
     this.gameOverText.on('pointerdown', () => this.scene.start('gameScene'));
-    this.score = 0;
+    this.score = 0
     if (song.isPlaying) {
-      gameOverSound.pause('overSound');
+      gameOverSound.pause('overSound')
     }
   }.bind(this));
 
@@ -145,84 +176,103 @@ class GameScene extends Phaser.Scene {
     const keySpaceObj = this.input.keyboard.addKey('SPACE')
 
     if (keyLeftObj.isDown === true) {
-      this.ship.x -= 15
-      if (this.ship.x < 0) {
-        this.ship.x = 1920
+      // Flip the image horizontally
+      this.player.setFlipX(true)
+      this.player.x -= 15
+      if (this.player.x < 0) {
+        this.player.x = 1920
       }
     }
 
     if (keyRightObj.isDown === true) {
-      this.ship.x += 15
-      if (this.ship.x > 1920) {
-        this.ship.x = 0
+      // Reset the image's orientation
+      this.player.setFlipX(false)
+      this.player.x += 15
+      if (this.player.x > 1920) {
+        this.player.x = 0
       }
     }
     
     if (keyUpObj.isDown === true) {
-      this.ship.y -= 15
-      if (this.ship.y < 0) {
-        this.ship.y = 0
+      this.player.y -= 15
+      if (this.player.y < 0) {
+        this.player.y = 0
       }
     }
 
     if (keyDownObj.isDown === true) {
-      this.ship.y += 15
-      if (this.ship.y > 1080) {
-        this.ship.y = 1080
+      this.player.y += 15
+      if (this.player.y > 1080) {
+        this.player.y = 1080
       }
     }
 
       if (keyAObj.isDown === true) {
-      this.ship.x -= 15
-      if (this.ship.x < 0) {
-        this.ship.x = 1920
+      // Flip the image horizontally
+      this.player.setFlipX(true)
+      this.player.x -= 15
+      if (this.player.x < 0) {
+        this.player.x = 1920
       }
     }
 
     if (keyDObj.isDown === true) {
-      this.ship.x += 15
-      if (this.ship.x > 1920) {
-        this.ship.x = 0
+      // Reset the image's orientation
+      this.player.setFlipX(false)
+      this.player.x += 15
+      if (this.player.x > 1920) {
+        this.player.x = 0
       }
     }
     
     if (keyWObj.isDown === true) {
-      this.ship.y -= 15
-      if (this.ship.y < 0) {
-        this.ship.y = 0
+      this.player.y -= 15
+      if (this.player.y < 0) {
+        this.player.y = 0
       }
     }
 
     if (keySObj.isDown === true) {
-      this.ship.y += 15
-      if (this.ship.y > 1080) {
-        this.ship.y = 1080
+      this.player.y += 15
+      if (this.player.y > 1080) {
+        this.player.y = 1080
       }
     }
     
     if (keySpaceObj.isDown === true) {
-      if (this.fireMissile === false) {
-        // fire missile
-        this.fireMissile = true
-        const aNewMissile = this.physics.add.sprite(this.ship.x, this.ship.y, 'soccerBall').setScale(0.2)
-        this.missileGroup.add(aNewMissile)
+      if (this.fireBall === false) {
+        // fire ball
+        this.fireBall = true
+        const aNewBall = this.physics.add.sprite(this.player.x, this.player.y, 'soccerBall').setScale(0.2)
+        this.ballGroup.add(aNewBall)
         this.sound.play('ballShot')
       }
     }
   
     if (keySpaceObj.isUp === true) {
-      this.fireMissile = false
+      this.fireBall = false
     }
-    this.missileGroup.children.each(function (item) {
+    this.ballGroup.children.each(function (item) {
       item.y = item.y - 15
       if (item.y < 50) {
         item.destroy()
       }
-    })  
+    })
+     if (this.score > this.highScore) {
+      this.highScore = this.score;
+      this.highScoreText.setText('High Score: ' + this.highScore.toString());
+
+      // Store the new high score in local storage
+      localStorage.setItem('highScore', this.highScore.toString());
+    }
+    if (this.score == 100) {
+    this.scene.start('winScene')
+    this.score = 0
+  }
   }
 }
 
 
-export default GameScene;
+export default GameScene
 
     

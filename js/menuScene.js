@@ -1,4 +1,4 @@
-/* global phaser */
+/* global Phaser */
 
 // Copyright (c) 2023 Remy Skelton All rights reserved
 // 
@@ -10,11 +10,13 @@
  * This class is the Menu Scene.
  */
 class MenuScene extends Phaser.Scene {
-  constructor () {
+  constructor() {
     super({ key: 'menuScene' })
 
-		this.menuSceneBackgroundImage = null
-    this.startButton = null
+    this.menuSceneBackgroundImage = null;
+    this.startButton = null;
+    // Declare the INTROSONG property
+    this.INTROSONG = null; 
   }
 
   /**
@@ -23,18 +25,20 @@ class MenuScene extends Phaser.Scene {
    * before preload() and create().
    * @param {object} data - Any data passed via ScenePlugin.add() or scenePlugin.start().
    */
-  init (data) {
-    this.cameras.main.setBackgroundColor('#808080')
+  init(data) {
+    this.cameras.main.setBackgroundColor('#808080');
   }
 
   /**
    * Can be defined on the screen.
    * Use it to load assets.
    */
-  preload () {
-    console.log('Menu Scene')
-		this.load.image('startBall', './assets/startImage.png')
-    this.load.image('goldBallBackground', './assets/gold-Ball.jpg')
+  preload() {
+    console.log('Menu Scene');
+    this.load.image('startBall', './assets/startImage.png');
+    this.load.image('goldBallBackground', './assets/gold-Ball.jpg');
+    //sounds
+    this.load.audio('menuSong', './assets/sirusMenuSound.wav');
   }
 
   /**
@@ -42,14 +46,19 @@ class MenuScene extends Phaser.Scene {
    * Use it to create the game objects you want.
    * @param {object} data - Any data passed via ScenePlugin.add() or scenePlugin.start().
    */
-  create (data) {
-	  this.menuSceneBackgroundImage = this.add.sprite(0, 0, 'goldBallBackground').setScale(1.5)
-    this.menuSceneBackgroundImage.x = 1920 / 2
-    this.menuSceneBackgroundImage.y = 1080 / 2
+  create(data) {
+    // Soundtrack
+    this.INTROSONG = this.sound.add('menuSong');
+    this.INTROSONG.loop = true;
+    this.INTROSONG.play();
 
-    this.startButton = this.add.sprite(1920 / 2, (1080 / 2) + 100, 'startBall').setScale(3.0)
-    this.startButton.setInteractive({ useHandCursor: true })
-    this.startButton.on('pointerdown', () => this.clickButton())
+    this.menuSceneBackgroundImage = this.add.sprite(0, 0, 'goldBallBackground').setScale(1.5);
+    this.menuSceneBackgroundImage.x = 1920 / 2;
+    this.menuSceneBackgroundImage.y = 1080 / 2;
+
+    this.startButton = this.add.sprite(1920 / 2, (1080 / 2) + 100, 'startBall').setScale(3.0);
+    this.startButton.setInteractive({ useHandCursor: true });
+    this.startButton.on('pointerdown', () => this.clickButton());
   }
 
   /**
@@ -58,12 +67,14 @@ class MenuScene extends Phaser.Scene {
    * @param {number} time - The current time.
    * @param {number} delta - The delta time in ms since the last frame.
    */
-  update (time, delta) {
+  update(time, delta) {
   }
 
-  clickButton () {
-    this.scene.start('gameScene')
+  clickButton() {
+    // Stop the menu music
+    this.INTROSONG.stop();
+    this.scene.start('gameScene');
   }
 }
 
-export default MenuScene
+export default MenuScene;
