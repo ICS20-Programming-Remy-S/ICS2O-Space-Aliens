@@ -40,24 +40,25 @@ class GameScene extends Phaser.Scene {
     super({ key: 'gameScene' });
 
     // Initialize variables
-    this.player = null;
-    this.fireBall = false;
-    this.score = 0;
-    this.scoreText = null;
-    this.scoreTextStyle = { font: '65px Arial', fill: '#ffffff', align: 'center' };
-    this.gameOverTextStyle = { font: '65px Arial', fill: '#ff0000', align: 'center' };
-    this.highScore = 0;
-    this.highScoreText = null;
+    this.player = null
+    this.fireBall = false
+    this.score = 0
+    this.scoreText = null
+    this.scoreTextStyle = { font: '65px Arial', fill: '#ffffff', align: 'center' }
+    this.gameOverTextStyle = { font: '65px Arial', fill: '#ff0000', align: 'center' }
+    this.highScore = 0
+    this.highScoreText = null
+    this.SONG = null
   }
 
   // Initialize scene
   init(data) {
-    this.cameras.main.setBackgroundColor('#0x5f6e7a');
+    this.cameras.main.setBackgroundColor('#0x5f6e7a')
 
     // Retrieve high score from local storage
-    const storedHighScore = localStorage.getItem('highScore');
+    const storedHighScore = localStorage.getItem('highScore')
     if (storedHighScore) {
-      this.highScore = parseInt(storedHighScore);
+      this.highScore = parseInt(storedHighScore)
     }
   }
 
@@ -79,16 +80,16 @@ class GameScene extends Phaser.Scene {
   // Create scene
   create(data) {
     // Soundtrack
-    const song = this.sound.add('music');
-    song.loop = true;
-    song.play();
+    this.SONG = this.sound.add('music')
+    this.SONG.loop = true
+    this.SONG.play()
 
     // Background image
-    this.background = this.add.image(0, 0, 'soccerBackground').setScale(2.75);
-    this.background.setOrigin(0, 0);
+    this.background = this.add.image(0, 0, 'soccerBackground').setScale(2.75)
+    this.background.setOrigin(0, 0)
 
     // Score text
-    this.scoreText = this.add.text(10, 10, 'Score: ' + this.score.toString(), this.scoreTextStyle);
+    this.scoreText = this.add.text(10, 10, 'Score: ' + this.score.toString(), this.scoreTextStyle)
 
     // High score text
     this.highScoreText = this.add.text(
@@ -96,18 +97,18 @@ class GameScene extends Phaser.Scene {
       70,
       'High Score: ' + this.highScore.toString(),
       this.scoreTextStyle
-    );
+    )
 
     // Create player sprite
-    this.player = this.physics.add.sprite(1920 / 2, 1080 - 100, 'soccerPlayer');
+    this.player = this.physics.add.sprite(1920 / 2, 1080 - 100, 'soccerPlayer')
 
     // Game Over sound
-    const gameOverSound = this.sound.add('overSound');
+    const gameOverSound = this.sound.add('overSound')
 
     // Create groups for ball and defender sprites
-    this.ballGroup = this.physics.add.group();
-    this.defenderGroup = this.add.group();
-    this.createDefender();
+    this.ballGroup = this.physics.add.group()
+    this.defenderGroup = this.add.group()
+    this.createDefender()
 
     // Function to create a defender
     const createDefender = () => {
@@ -115,13 +116,13 @@ class GameScene extends Phaser.Scene {
       let defenderXVelocity = Math.floor(Math.random() * 50) + 1;
       defenderXVelocity *= Math.round(Math.random()) ? 1 : -1;
 
-      const anDefender = this.physics.add.sprite(defenderXLocation, -100, 'defender');
-      anDefender.body.velocity.y = 200;
-      anDefender.body.velocity.x = defenderXVelocity;
-      anDefender.setScale(0.35);
+      const anDefender = this.physics.add.sprite(defenderXLocation, -100, 'defender')
+      anDefender.body.velocity.y = 200
+      anDefender.body.velocity.x = defenderXVelocity
+      anDefender.setScale(0.35)
 
-      this.defenderGroup.add(anDefender);
-    };
+      this.defenderGroup.add(anDefender)
+    }
 
   // Create a timer event to call createDefender every 2 seconds
   const defenderTimer = this.time.addEvent({
@@ -129,7 +130,7 @@ class GameScene extends Phaser.Scene {
     callback: createDefender,
     callbackScope: this,
     loop: true
-  });
+  })
 
   //collisions between ball and defender
     this.physics.add.collider(this.ballGroup, this.defenderGroup, function (ballCollide, defenderCollide) {
@@ -146,21 +147,17 @@ class GameScene extends Phaser.Scene {
   this.physics.add.collider(this.player, this.defenderGroup, function (playerCollide, defenderCollide) {
     gameOverSound.play()
     // Disable the space bar
-    const keySpaceObj = this.input.keyboard.addKey('SPACE')
+    const keySpaceObj =                                  this.input.keyboard.addKey('SPACE')
     keySpaceObj.enabled = false
-    song.pause('music')
+    this.SONG.pause('music')
     this.physics.pause()
     defenderCollide.destroy()
     playerCollide.destroy()
     this.gameOverText = this.add.text(1920 / 2, 1080 / 2, 'Game Over!\nClick to play again.', this.gameOverTextStyle).setOrigin(0.5)
-    this.gameOverText.setInteractive({ useHandCursor: true });
-    this.gameOverText.on('pointerdown', () => this.scene.start('gameScene'));
+    this.gameOverText.setInteractive({ useHandCursor: true })
+    this.gameOverText.on('pointerdown', () => this.scene.start('gameScene'))
     this.score = 0
-    if (song.isPlaying) {
-      gameOverSound.pause('overSound')
-    }
   }.bind(this));
-
 }
 
     update (time, delta) {
@@ -259,16 +256,18 @@ class GameScene extends Phaser.Scene {
       }
     })
      if (this.score > this.highScore) {
-      this.highScore = this.score;
-      this.highScoreText.setText('High Score: ' + this.highScore.toString());
+      this.highScore = this.score
+      this.highScoreText.setText('High Score: ' + this.highScore.toString())
 
       // Store the new high score in local storage
-      localStorage.setItem('highScore', this.highScore.toString());
+      localStorage.setItem('highScore', this.highScore.toString())
     }
-    if (this.score == 100) {
-    this.scene.start('winScene')
-    this.score = 0
-  }
+   if (this.score === 5) {
+   this.scene.start('winScene')
+   this.score = 0
+  this.highScore = 0
+    this.SONG.stop()
+}
   }
 }
 

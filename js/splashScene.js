@@ -15,6 +15,8 @@ class SplashScene extends Phaser.Scene {
    */
   constructor () {
     super({ key: 'splashScene' })
+
+    this.macSceneBackgroundImage = null
   }
 
   /** 
@@ -23,9 +25,9 @@ class SplashScene extends Phaser.Scene {
    * before preload() and create().
    * @param {object} data - Any data passed via ScenePlugin.add() or scenePlugin.start().
    */
-  init (data) {
-    this.cameras.main.setBackgroundColor('#000000')
-  }
+  init(data) {
+  this.cameras.main.setBackgroundColor('#704F00');
+}
   /** 
    * Can be defined on the screen.
    * Use it to load assets.
@@ -41,9 +43,38 @@ class SplashScene extends Phaser.Scene {
    * @param {object} data - Any data passed via ScenePlugin.add() or scenePlugin.start().
    */
   create (data) {
-    this.splashSceneBackgroundImage = this.add.sprite(0, 0, 'macSplash')
-    this.splashSceneBackgroundImage.x = 1920 / 2
-    this.splashSceneBackgroundImage.y = 1080 / 2
+    this.macSceneBackgroundImage = this.add.sprite(0, 0, 'macSplash')
+    this.macSceneBackgroundImage.x = 1920 / 2
+    this.macSceneBackgroundImage.y = 1080 / 2
+
+     // Set the initial alpha to 0 (fully transparent)
+  this.macSceneBackgroundImage.alpha = 0
+
+  // Create a fade-in tween
+  this.tweens.add({
+    targets: this.macSceneBackgroundImage,
+    // fully opaque
+    alpha: 1,  
+    // Duration of the fade-in effect, 2 seconds
+    duration: 2000,  
+    ease: 'Linear',
+    // No repeat
+    repeat: 0  
+  })
+
+  // Make mac logo fade-out with a delay of 2 seconds after the fade-in effect
+  this.tweens.add({
+    targets: this.macSceneBackgroundImage,
+    // fully transparent
+    alpha: 0,  
+    // Duration of the fade-out effect in milliseconds (2 seconds)
+    duration: 2000, 
+    ease: 'Linear',
+    // No repeat
+    repeat: 0, 
+    // Delay of 2000 milliseconds
+    delay: 2000  
+  })
   }
 
   /** 
@@ -53,7 +84,7 @@ class SplashScene extends Phaser.Scene {
    * @param {number} delta - The delta time in ms since the last frame.
    */
   update (time, delta) {
-    if (time > 3000) {
+    if (time > 6000) {
       this.scene.switch('titleScene')
     }
   }
