@@ -9,15 +9,14 @@
 /**
  * This class is the Menu Scene.
  */
-class MenuScene extends Phaser.Scene {
+class InstructionsScene extends Phaser.Scene {
+  
+  // this is the constructor
   constructor() {
-    super({ key: 'menuScene' })
+    super({ key: 'instructionsScene' });
 
-    this.menuSceneBackgroundImage = null
-    this.startButton = null
-    // Declare the INTROSONG property
-    this.INTROSONG = null
-    this.retroInstructionsButton = null
+    this.background = null
+    this.menuButton = null
   }
 
   /**
@@ -27,21 +26,20 @@ class MenuScene extends Phaser.Scene {
    * @param {object} data - Any data passed via ScenePlugin.add() or scenePlugin.start().
    */
   init(data) {
-    this.cameras.main.setBackgroundColor('#808080')
+    this.cameras.main.setBackgroundColor('#000000')
   }
+
 
   /**
    * Can be defined on the screen.
    * Use it to load assets.
    */
-  preload() {
-    console.log('Menu Scene')
-    this.load.image('startBall', './assets/startImage.png')
-    this.load.image('goldBallBackground', './assets/gold-Ball.jpg')
-    this.load.image('instructionsButton', './assets/instructionButton.png')
-    //sounds
-    this.load.audio('menuSong', './assets/sirusMenuSound.wav')
+ preload() {
+    this.load.image('background', './assets/instructionsBackground.png')
+    this.load.image('menuButton', './assets/menuButton.png')
+   this.load.audio('instructionsMusic', './assets/intructionsMusic.wav')
   }
+
 
   /**
    * Can be defined on the screen.
@@ -49,24 +47,29 @@ class MenuScene extends Phaser.Scene {
    * @param {object} data - Any data passed via ScenePlugin.add() or scenePlugin.start().
    */
   create(data) {
-    // Soundtrack
-    this.INTROSONG = this.sound.add('menuSong')
-    this.INTROSONG.loop = true
-    this.INTROSONG.play()
+   
+    //Sound track
+    const song = this.sound.add('instructionsMusic');
+    song.loop = true
+    song.play()
 
-    this.menuSceneBackgroundImage = this.add.sprite(0, 0, 'goldBallBackground').setScale(1.5)
-    this.menuSceneBackgroundImage.x = 1920 / 2
-    this.menuSceneBackgroundImage.y = 1080 / 2
+    this.background = this.add.image(1920 / 2, 1080 / 2, 'background');
+    this.background.setOrigin(0.5).setScale(0.75);
 
-    this.startButton = this.add.sprite(1920 / 2, (1080 / 2) + 100, 'startBall').setScale(3.0)
-    this.startButton.setInteractive({ useHandCursor: true })
-    this.startButton.on('pointerdown', () => this.clickButton())
+     this.menuButton = this.add.sprite(200, 75, 'menuButton'); 
+  this.menuButton.setScale(3);
+  this.menuButton.setInteractive({ useHandCursor: true });
+  this.menuButton.on('pointerdown', () => this.clickBack());
 
-    this.retroInstructionsButton = this.add.sprite(1920 / 2, 100, 'instructionsButton'); 
-    this.retroInstructionsButton.setScale(3.5); 
-    this.retroInstructionsButton.setInteractive({ useHandCursor: true });
-    this.retroInstructionsButton.on('pointerdown', () => this.clickInstructions());
-  }
+   const instructionsText = this.add.text(1920 / 2, (1080 / 2) + 200, "Instructions:\n\nUse the arrow keys or WASD to move the player around. Shoot balls at the defender to injure them, so you can get around them. There is a highscore to see how far you have gotten or if you reach 100 goals you will win the game and get the ballon d'or. To become the best player in history get 8 ballon d'ors", {
+    fontFamily: 'Arial',
+    fontSize: 40,
+    color: '#00FFFF',
+    align: 'center',
+    wordWrap: { width: 800, useAdvancedWrap: true }
+  });
+  instructionsText.setOrigin(0.5);
+}
 
   /**
    * This should be overridden by our other scenes.
@@ -74,13 +77,12 @@ class MenuScene extends Phaser.Scene {
    * @param {number} time - The current time.
    * @param {number} delta - The delta time in ms since the last frame.
    */
-  update(time, delta) {
-  }
-
-  clickInstructions() {
-    this.scene.start('menuScene')
-    this.INTROSONG.stop()
+  //Go back to menuScene
+ clickBack() {
+   // Stop all sounds
+  this.scene.start('menuScene')
+   this.sound.stopAll()
   }
 }
 
-export default MenuScene
+export default InstructionsScene;

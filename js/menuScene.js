@@ -38,7 +38,7 @@ class MenuScene extends Phaser.Scene {
     console.log('Menu Scene')
     this.load.image('startBall', './assets/startImage.png')
     this.load.image('goldBallBackground', './assets/gold-Ball.jpg')
-    this.load.image('instructionsButton', './assets/instructionButton.png')
+    this.load.image('instructionsButton', './assets/instructionsButton.png')
     //sounds
     this.load.audio('menuSong', './assets/sirusMenuSound.wav')
   }
@@ -59,13 +59,18 @@ class MenuScene extends Phaser.Scene {
     this.menuSceneBackgroundImage.y = 1080 / 2
 
     this.startButton = this.add.sprite(1920 / 2, (1080 / 2) + 100, 'startBall').setScale(3.0)
-    this.startButton.setInteractive({ useHandCursor: true })
-    this.startButton.on('pointerdown', () => this.clickButton())
+  this.startButton.setInteractive({ useHandCursor: true })
+  this.startButton.on('pointerdown', () => this.clickButton())
 
-    this.retroInstructionsButton = this.add.sprite(1920 / 2, 100, 'instructionsButton'); 
-    this.retroInstructionsButton.setScale(3.5); 
-    this.retroInstructionsButton.setInteractive({ useHandCursor: true });
-    this.retroInstructionsButton.on('pointerdown', () => this.clickInstructions());
+  this.retroInstructionsButton = this.add.sprite(1920 / 2, 100, 'instructionsButton'); 
+  this.retroInstructionsButton.setScale(2); 
+  this.retroInstructionsButton.setInteractive({ useHandCursor: true });
+  this.retroInstructionsButton.on('pointerdown', () => this.clickInstructions());
+    // Adjust hit area
+  const hitArea = new Phaser.Geom.Rectangle(-50, -50, 100, 100);
+  this.retroInstructionsButton.setInteractive(hitArea, Phaser.Geom.Rectangle.Contains);
+
+  this.retroInstructionsButton.on('pointerdown', () => this.clickInstructions());
   }
 
   /**

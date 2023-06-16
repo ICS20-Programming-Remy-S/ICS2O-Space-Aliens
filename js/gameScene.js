@@ -92,6 +92,7 @@ class GameScene extends Phaser.Scene {
     this.scoreText = this.add.text(10, 10, 'Score: ' + this.score.toString(), this.scoreTextStyle)
 
     // High score text
+    this.highScore = 0
     this.highScoreText = this.add.text(
       10,
       70,
@@ -258,9 +259,6 @@ class GameScene extends Phaser.Scene {
      if (this.score > this.highScore) {
       this.highScore = this.score
       this.highScoreText.setText('High Score: ' + this.highScore.toString())
-
-      // Store the new high score in local storage
-      localStorage.setItem('highScore', this.highScore.toString())
     }
    if (this.score === 5) {
    this.scene.start('winScene')
